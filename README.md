@@ -9,3 +9,9 @@ For using the tool, please follow the steps:
     2. DSRAE analysis
     3. Temporal results: first get the temporal results
     4. Spatial results: then get the spatial results, due to the spatial results are derived by the temporal results.
+    
+ 
+Requirements:
+The version of Python is 3.5
+The version of Keras is 2.2.4
+The version of Tensorflow is 1.13.1
