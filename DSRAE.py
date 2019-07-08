@@ -258,11 +258,13 @@ def RAE_plot_y():
     y_norm = sio.loadmat(task_name+'_y_norm_test.mat')
     y_norm = y_norm['y_norm']
 
-    RAE_plot_y.a.plot(t, y_norm[len_volume*(SUB_NUM-1):len_volume*(SUB_NUM-0), 0,2],linewidth=2)
+    RAE_plot_y.a.plot(t, y_norm[len_volume*(int(s_sub.get())-1):len_volume*(int(s_sub.get())-0),
+                         0,(int(s_net.get())-1)],linewidth=2)
 
     RAE_plot_y.canvas.draw()
 
-    temp = np.corrcoef(task_content[:,1],y_norm[len_volume*(SUB_NUM-1):len_volume*(SUB_NUM-0),0,2])
+    temp = np.corrcoef(task_content[:,1],y_norm[len_volume*(int(s_sub.get())-1):
+                                                len_volume*(int(s_sub.get())-0),0,(int(s_net.get())-1)])
     print('%.3f' % temp[0,1])
     text.config(text="The correlation coefficient is: " + str(temp[0,1]))
 
@@ -323,7 +325,7 @@ def RAE_dec_volume():
 
     corr_net = np.zeros((SUB_NUM, len_volume, 32), dtype=float)
     print(np.shape(corr_net))
-    for i in range((SUB_NUM-2), (SUB_NUM-1)):
+    for i in range((s_sub.get()-1), (s_sub.get()-0)):
         a = sub_data[i * len_volume : (i + 1) * len_volume, :]
         for k in range(0, len_volume):
             c = a[k, :]
@@ -337,7 +339,7 @@ def RAE_dec_volume():
     RAE_dec_volume.f.clf()
     RAE_dec_volume.b = RAE_dec_volume.f.add_subplot(111)
 
-    a = np.transpose(corr_net[(SUB_NUM-2),:,:])
+    a = np.transpose(corr_net[(s_sub.get()-1),:,:])
 
     im = RAE_dec_volume.b.pcolor(np.arange(0, len_volume), np.arange(0, 32), a,cmap='seismic')
 
@@ -348,6 +350,9 @@ def RAE_dec_volume():
 
 import tkinter
 from tkinter import *
+
+
+
 window = tkinter.Tk()
 window.title('                              DSRAE Analysis GUI')
 screenwidth = window.winfo_screenwidth()
@@ -364,6 +369,8 @@ label1 = Label(window, text = "Data Prepare", font=ft)
 label2 = Label(window, text = "DSRAE Analysis Process", font=ft)
 label3 = Label(window, text = "Temporal Results", font=ft)
 label4 = Label(window, text = "Spatial Results", font=ft)
+label5 = Label(window, text = "sub_num", font=ft)
+label6 = Label(window, text = "net_num", font=ft)
 bt_get_data1 = Button(window,text = "Language", bg = "#A9A9A9", command = RAE_get_data_L, font=ft1, height=2, width=7)
 bt_get_data2 = Button(window,text = "WM", bg = "#A9A9A9", command = RAE_get_data_W, font=ft1, height=2, width=7)
 bt_get_data3 = Button(window,text = "Gambling", bg = "#A9A9A9", command = RAE_get_data_G, font=ft1, height=2, width=7)
@@ -376,6 +383,15 @@ bt_get_component = Button(window,text = "Get Spatial", bg = "#A9A9A9", command =
 bt_decode_volime = Button(window,text = "Plot Decoding", bg = "#A9A9A9", command = RAE_dec_volume, font=ft1, height=2, width=13)
 
 text = Label(window, text='', font=ft)
+
+label5.place(x=0, y=210)
+s_sub = Scale(window, from_=1, to=SUB_NUM, orient=VERTICAL,
+             length=300, showvalue=1, tickinterval=5, resolution=1)
+s_sub.place(x=0,y=230)
+label6.place(x=530, y=210)
+s_net = Scale(window, from_=1, to=32, orient=VERTICAL,
+             length=300, showvalue=1, tickinterval=5, resolution=1)
+s_net.place(x=530,y=230)
 
 label1.place(x=110,y=30)
 bt_get_data1.place(x=40, y=50)
